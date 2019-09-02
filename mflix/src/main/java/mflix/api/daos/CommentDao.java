@@ -24,17 +24,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Updates.*;
 import static com.mongodb.client.model.Aggregates.*;
 
@@ -189,6 +183,17 @@ public class CommentDao extends AbstractMFlixDao {
     // // guarantee for the returned documents. Once a commenter is in the
     // // top 20 of users, they become a Critic, so mostActive is composed of
     // // Critic objects.
+
+    List<Bson> pipeline = Arrays.asList(
+            sortByCount("$email"),
+            limit(20));
+
+    commentCollection
+            .withReadConcern(ReadConcern.MAJORITY)
+            .aggregate(pipeline, Critic.class)
+            .iterator()
+            .forEachRemaining(mostActive::add);
+
     return mostActive;
   }
 }

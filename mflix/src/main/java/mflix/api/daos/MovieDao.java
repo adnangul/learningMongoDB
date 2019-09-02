@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Projections.*;
 import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Sorts.*;
 
