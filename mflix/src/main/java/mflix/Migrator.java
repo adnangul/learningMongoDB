@@ -99,7 +99,7 @@ public class Migrator {
     String mongoUri = "mongodb+srv://m220student:m220password@mflix-gd7hr.mongodb.net/test";
 
     // instantiate database and collection objects
-    MongoDatabase mflix = MongoClients.create(mongoUri).getDatabase("mflix");
+    MongoDatabase mflix = MongoClients.create(mongoUri).getDatabase("sample_mflix");
     MongoCollection<Document> movies = mflix.getCollection("movies");
 
     // TODO> Ticket: Migration - create a query filter that finds all
