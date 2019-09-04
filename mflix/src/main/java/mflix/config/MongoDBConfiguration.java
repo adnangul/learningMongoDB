@@ -26,8 +26,31 @@ public class MongoDBConfiguration {
 
     //TODO> Ticket: Handling Timeouts - configure the expected
     // WriteConcern `wtimeout` and `connectTimeoutMS` values
-    MongoClient mongoClient = MongoClients.create(connectionString);
+    final MongoClientSettings settings = MongoClientSettings
+            .builder()
+            .applicationName("mflix")
+            .applyConnectionString(connString)
+            .writeConcern(new WriteConcern("majority").withWTimeout(2500, TimeUnit.MILLISECONDS)) // wtimeoutMS
+            .applyToClusterSettings(builder ->
+                    builder
+                            .applyConnectionString(connString)
+                            .serverSelectionTimeout(5000, TimeUnit.MILLISECONDS) // mentioned on video
+                            .build())
+            .applyToConnectionPoolSettings(builder ->
+                    builder
+                            .applyConnectionString(connString)
+                            .maxSize(50)  // maxPoolSize
+                            .build())
+            .applyToSocketSettings(builder ->
+                    builder
+                            .applyConnectionString(connString)
+                            .connectTimeout(2000, TimeUnit.MILLISECONDS) // connectTimeoutMS
+                            .build())
+            .build();
 
-    return mongoClient;
+
+   // MongoClient mongoClient = MongoClients.create(connectionString)
+
+    return MongoClients.create(settings);
   }
 }
